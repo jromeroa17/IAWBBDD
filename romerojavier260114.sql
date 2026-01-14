@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-01-2026 a las 10:06:46
+-- Tiempo de generación: 14-01-2026 a las 18:39:15
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,15 +20,14 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `romerojavier`
 --
-drop database if exists romerojavier;
+
 -- --------------------------------------------------------
-create database if not exists romerojavier;
-use romerojavier;
+
 --
 -- Estructura de tabla para la tabla `personajes`
 --
 
-CREATE TABLE if not exists `personajes` (
+CREATE TABLE `personajes` (
   `codigo` varchar(250) NOT NULL,
   `nombre_personaje` varchar(250) DEFAULT NULL,
   `clase` varchar(250) DEFAULT NULL,
@@ -42,13 +41,20 @@ CREATE TABLE if not exists `personajes` (
   `creador` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `personajes`
+--
+
+INSERT INTO `personajes` (`codigo`, `nombre_personaje`, `clase`, `fuerza`, `destreza`, `constitucion`, `inteligencia`, `sabiduria`, `carisma`, `imagen`, `creador`) VALUES
+('sad', 'sadasd', 'picaro', 4, 4, 4, 4, 4, 4, 'borjaespobre.PNG', 'daniel');
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `usuarios`
 --
 
-CREATE TABLE if not exists `usuarios` (
+CREATE TABLE `usuarios` (
   `nombre_usuario` varchar(250) NOT NULL,
   `email` varchar(250) NOT NULL,
   `contrasena` varchar(250) NOT NULL

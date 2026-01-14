@@ -1,4 +1,13 @@
 <?php
+	function conexion_bbdd($server,$user,$pass,$dbName){
+		try{
+			$link = mysqli_connect($server, $user, $pass, $dbName);
+		}
+		catch(mysqli_sql_exception $e){
+			echo "Conexión fallida" . $e->getMessage();
+		}
+		return $link;
+	}
 	function my_query($link, $consulta, $campos){
 		$resul = mysqli_query($link,$consulta);
 		$numFilas = mysqli_num_rows($resul);
@@ -83,7 +92,7 @@
 		}
 		return $correcto;
 	}
-	
+
 	function move_image($nombre,$origen,$destino){
 		if(file_exists($destino)){
 			echo "<br> Fichero $nombre ya existe";
@@ -94,7 +103,6 @@
 			}
 		}
 	}
-	
 	function datos_correctos($link,$consulta){
 		$correcto = true;
 		$resul = mysqli_query($link,$consulta);
@@ -129,6 +137,31 @@
 		catch(mysqli_sql_exception $e){
 			echo "<br>La modificación ha fallado: " . $e->getMessage();
 			$correcto = false;
+		}
+		return $correcto;
+	}
+	
+	function generar_stat(){
+		$suma = 0;
+		for($i = 1; $i <= 3; $i++){
+			$suma += rand(1,6);
+		}
+		return $suma;
+	}
+	
+	function controlErrores($campos){
+		$correcto = true;
+		foreach($campos as $campo)
+			if (empty($campo)){
+				$correcto = false;
+			}
+		return $correcto;
+	}
+	
+	function checkStat($stat){
+		$correcto = false;
+		if(is_numeric($stat)){
+			$correcto = true;
 		}
 		return $correcto;
 	}

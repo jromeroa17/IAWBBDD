@@ -7,6 +7,10 @@
     <title>BBDD</title>
 
     <style>
+		.stats{
+			width:25%;
+			border-radius:20px;
+		}
     </style>
 </head>
 <body>
@@ -16,14 +20,10 @@
 		$user = "root";
 		$pass = "";
 		$dbName = "romeroJavier";
-		$campos = ["nombre_usuario","contrasena"];
+		$campos = ["codigo","nombre_personaje","clase","fuerza","destreza","constitucion","inteligencia","sabiduria","carisma","imagen","creador"];
 		
-		try{
-			$link = mysqli_connect($server, $user, $pass, $dbName);
-		}
-		catch(mysqli_sql_exception $e){
-			echo "Conexión fallida" . $e->getMessage();
-		}
+		$link = conexion_bbdd($server,$user,$pass,$dbName);
+		
 		if(isset($_SESSION["usuario"])){
 			$current_user = $_SESSION["usuario"];
 		}
@@ -68,61 +68,161 @@
 		  </div>
 		</nav>
 	</header>
+	<?php
+		$codigo = "";
+		$nombre = "";
+		$clase = "";
+		$fuerza = "";
+		$destreza = "";
+		$constitucion = "";
+		$inteligencia = "";
+		$sabiduria = "";
+		$imagen = "";
+		$carisma = "";
+	?>
+	<?php
+			if(isset($_POST["enviar"])){
+				$codigo = $_POST["codigo"];
+				$nombre = $_POST["nombre_personaje"];
+				$clase = $_POST["clase"];
+				$fuerza = $_POST["fuerza"];
+				$destreza = $_POST["destreza"];
+				$constitucion = $_POST["constitucion"];
+				$inteligencia = $_POST["inteligencia"];
+				$sabiduria = $_POST["sabiduria"];
+				$carisma = $_POST["carisma"];
+				$imagen = $_FILES["imagen"]["name"];
+				$datos = [$codigo,$nombre,$clase,$fuerza,$destreza,$constitucion,$inteligencia,$sabiduria,$carisma,$imagen];
+				$correcto = controlErrores($datos);
+				if($correcto){
+					$stats = [$fuerza,$destreza,$constitucion,$inteligencia,$sabiduria,$carisma];
+					foreach($stats as $stat)
+						if (!checkStat($stat)){
+							$statsmal = true;
+						}
+						else{
+							$statsmal = false;
+						}
+				}
+			}
+		?>
 	<main>
 		<div class="container">
 			<h2 class="text-center">Crear Personaje<h2>
 			<form action="" method="POST" enctype="multipart/form-data">
 				<div class="form-group mb-4">
+					<label class="" for="codigo">Código: </label>
+					<input type="text" class="form-control" name="codigo" id="codigo" required value="<?php echo $codigo?>">
+				</div>
+				<div class="form-group mb-4">
 					<label class="" for="nombre">Nombre: </label>
-					<input type="text" class="form-control" name="nombre" id="nombre">
+					<input type="text" class="form-control" name="nombre_personaje" id="nombre" value="<?php echo $nombre?>">
 				</div>
 				<div class="form-group mb-4">
 					<label class="" for="clase">Clase: </label>
 					<select class="form-select" name="clase" id="clase">
-						<option value="guerrero" selected>Guerrero</option>
-						<option value="picaro">Pícaro</option>
-						<option value="clerigo">Clérigo</option>
-						<option value="mago">Mago</option>
+						<option value="guerrero" <?php if($_POST["clase"]=="guerrero"){ echo "selected";}?>>Guerrero</option>
+						<option value="picaro" <?php if($_POST["clase"]=="picaro"){ echo "selected";}?>>Pícaro</option>
+						<option value="clerigo" <?php if($_POST["clase"]=="clerigo"){ echo "selected";}?>>Clérigo</option>
+						<option value="mago" <?php if($_POST["clase"]=="mago"){ echo "selected";}?>>Mago</option>
 					</select>
 				</div>
 				<div class="form-group mb-4">
 					<span> Estadísticas: </span>
-					<div>
-						<div>
-							<input class="stats" type="text" name="fuerza" id="fuerza">
+					<div class="d-flex justify-content-center mt-4">
+						<div class="d-flex flex-column justify-content-center">
+							<input class="stats" type="text" name="fuerza" id="fuerza" value="<?php echo $fuerza?>">
 							<label for="fuerza">Fuerza</label>
-							<input type="submit" class="btn btn-primary" name="fuerza-generar" value="Generar">
+							<?php
+								if(!checkStat($fuerza)){
+							?>
+							<span>Introduce un valor numérico</span>
+							<?php
+								}
+							?>
 						</div>
-						<div>
-							<input class="stats" type="text" name="destreza" id="destreza">
+						<div class="d-flex flex-column">
+							<input class="stats" type="text" name="destreza" id="destreza" value="<?php echo $destreza?>">
 							<label for="destreza">Destreza</label>
-							<input type="submit" class="btn btn-primary" name="destreza-generar" value="Generar">
+							<?php
+								if(!checkStat($destreza)){
+							?>
+							<span>Introduce un valor numérico</span>
+							<?php
+								}
+							?>
 						</div>
-						<div>
-							<input class="stats" type="text" name="constitucion" id="constitucion">
+						<div class="d-flex flex-column">
+							<input class="stats" type="text" name="constitucion" id="constitucion" value="<?php echo $constitucion?>">
 							<label for="constitucion">Constitución</label>
-							<input type="submit" name="constitucion-generar" class="btn btn-primary" value="Generar">
+							<?php
+								if(!checkStat($constitucion)){
+							?>
+							<span>Introduce un valor numérico</span>
+							<?php
+								}
+							?>
 						</div>
-						<div>
-							<input class="stats" type="text" name="inteligencia" id="inteligencia">
+						<div class="d-flex flex-column">
+							<input class="stats" type="text" name="inteligencia" id="inteligencia" value="<?php echo $inteligencia?>">
 							<label for="inteligencia">Inteligencia</label>
-							<input type="submit" class="btn btn-primary" name="inteligencia-generar" value="Generar">
+							<?php
+								if(!checkStat($inteligencia)){
+							?>
+							<span>Introduce un valor numérico</span>
+							<?php
+								}
+							?>
 						</div>
-						<div>
-							<input class="stats" type="text" name="sabiduria" id="sabiduria">
+						<div class="d-flex flex-column">
+							<input class="stats" type="text" name="sabiduria" id="sabiduria" value="<?php echo $sabiduria?>">
 							<label for="sabiduria">Sabiduría</label>
-							<input type="submit" name="sabiduria-generar" class="btn btn-primary" value="Generar">
+							<?php
+								if(!checkStat($sabiduria)){
+							?>
+							<span>Introduce un valor numérico</span>
+							<?php
+								}
+							?>
 						</div>
-						<div>
-							<input class="stats" type="text" name="carisma" id="carisma">
+						<div class="d-flex flex-column">
+							<input class="stats" type="text" name="carisma" id="carisma" value="<?php echo $carisma?>">
 							<label for="carisma">Carisma</label>
-							<input type="submit" name="carisma-generar" class="btn btn-primary" value="Generar">
+							<?php
+								if(!checkStat($carisma)){
+							?>
+							<span>Introduce un valor numérico</span>
+							<?php
+								}
+							?>
 						</div>
 					</div>
 				</div>
+				<div class="form-group mb-4">
+					<label class="" for="imagen">Imagen: </label>
+					<input type="file" class="form-control" name="imagen" id="imagen">
+				</div>
+				<input type="submit" class="btn btn-primary" name="enviar" value="Crear">
 			</form>
+			<?php
+				if(!$correcto){
+			?>
+				<span>Alguno de los campos está vacío</span>
+			<?php
+				}
+			?>
 		</div>
-		
+		<?php
+			if(isset($_POST["enviar"])){
+				if($correcto and !$statsmal){
+					$origen = $_FILES["imagen"]["tmp_name"];
+					$destino = $_SERVER["DOCUMENT_ROOT"]."/romeroJavier/IAWBBDD/imagenes/".$imagen;
+					move_image($imagen,$origen,$destino);
+					$consulta = "insert into personajes values ('$codigo','$nombre','$clase',$fuerza,$destreza,$constitucion,$inteligencia,$sabiduria,$carisma,'$imagen','$current_user');";
+					my_insert($link,$consulta);
+				}
+			}
+		?>
 	</main>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
