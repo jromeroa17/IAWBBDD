@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-01-2026 a las 17:15:14
+-- Tiempo de generación: 14-01-2026 a las 10:06:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -60,7 +60,7 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`nombre_usuario`, `email`, `contrasena`) VALUES
 ('daniel', 'daniel@ejemplo.com', '12345'),
 ('daniel1', 'daniel1@ejemplo.com', '12345'),
-('javier', 'javier@ejemplo.com', '12345');
+('el_cojo', 'cojo@ejemplo.com', '12345');
 
 --
 -- Índices para tablas volcadas

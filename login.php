@@ -68,10 +68,10 @@
 					<li class="nav-item">
 						<a class="nav-link" href="index.php">Home</a>
 					</li>
-					<li class="nav-item ">
+					<li class="nav-item active">
 						<a class="nav-link" href="registro.php">Registrarse</a>
 					</li>
-					<li class="nav-item active">
+					<li class="nav-item">
 						<a class="nav-link" href="login.php">Inicio de Sesión</a>
 					</li>
 					<li class="nav-item">
@@ -79,24 +79,25 @@
 					</li>
 					<?php if (isset($_SESSION["usuario"])) { ?>
 					<li class="nav-item">
-						<a class="nav-link" href="logout.php">Mi Cuenta</a>
+						<a class="nav-link" href="micuenta.php">Mi Cuenta</a>
 					</li>
 					<li class="nav-item dropdown">
 					  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Personajes
 					  </a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-							<a class="dropdown-item" href="#">Crear</a>
-							<a class="dropdown-item" href="#">Modificar</a>
-							<a class="dropdown-item" href="#">Listar</a>
-							<a class="dropdown-item" href="#">Borrar</a>
-							<a class="dropdown-item" href="#">Buscar</a>
+							<a class="dropdown-item" href="creapersonaje.php">Crear</a>
+							<a class="dropdown-item" href="modificarpersonaje.php">Modificar</a>
+							<a class="dropdown-item" href="listarpersonajes.php">Listar</a>
+							<a class="dropdown-item" href="borrarpersonaje.php">Borrar</a>
+							<a class="dropdown-item" href="buscarpersonajes.php">Buscar</a>
 						</div>
 						</li>
 					<?php } ?>
 				</ul>
 		  </div>
 		</nav>
+	</header>
 	</header>
 	<main>
 		<div class="container">
@@ -121,7 +122,7 @@
 					<input type="password" class="form-control" id="passwd" name="password" value="<?php if(isset($passwd)){echo $passwd;}?>" required>
 					<?php
 						if(isset($_POST["enviar"])){
-							if(!$coincide and !$nombre_correcto){
+							if(!$coincide and $nombre_correcto){
 								echo "<span>Contraseña incorrecta</span>";
 							}
 						}
@@ -140,6 +141,7 @@
 		</div>
 	</main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

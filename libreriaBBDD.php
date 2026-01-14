@@ -9,7 +9,22 @@
 			generateTable($resul, $campos);
 		}
 	}
-
+	
+	function get_user_data($link,$usuario,$dato){
+		$consulta = "select $dato from usuarios where nombre_usuario='$usuario'";
+		$resul = mysqli_query($link,$consulta);
+		$numFilas = mysqli_num_rows($resul);
+		if ($numFilas == 0){
+			echo "Eso está mal";
+		}
+		else{
+			$fila = mysqli_fetch_assoc($resul);
+			$dato_pedido = $fila[$dato];
+			return $dato_pedido;
+		}
+		
+	}
+	
 	function generateTable($resultado, $campos){
 		echo "<table border=1 class='datos'>";
 		echo "<tr>";

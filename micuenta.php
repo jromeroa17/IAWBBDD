@@ -7,16 +7,6 @@
     <title>BBDD</title>
 
     <style>
-		ul li {
-			padding:5px;
-		}
-		.container{
-			margin:20px auto;
-			width:70%;
-		}
-		form div {
-			margin:10px;
-		}
     </style>
 </head>
 <body>
@@ -68,10 +58,10 @@
 					<li class="nav-item">
 						<a class="nav-link" href="index.php">Home</a>
 					</li>
-					<li class="nav-item ">
+					<li class="nav-item active">
 						<a class="nav-link" href="registro.php">Registrarse</a>
 					</li>
-					<li class="nav-item active">
+					<li class="nav-item">
 						<a class="nav-link" href="login.php">Inicio de Sesión</a>
 					</li>
 					<li class="nav-item">
@@ -86,11 +76,11 @@
 						Personajes
 					  </a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-							<a class="dropdown-item" href="#">Crear</a>
-							<a class="dropdown-item" href="#">Modificar</a>
-							<a class="dropdown-item" href="#">Listar</a>
-							<a class="dropdown-item" href="#">Borrar</a>
-							<a class="dropdown-item" href="#">Buscar</a>
+							<a class="dropdown-item" href="creapersonaje.php">Crear</a>
+							<a class="dropdown-item" href="modificarpersonaje.php">Modificar</a>
+							<a class="dropdown-item" href="listarpersonajes.php">Listar</a>
+							<a class="dropdown-item" href="borrarpersonaje.php">Borrar</a>
+							<a class="dropdown-item" href="buscarpersonajes.php">Buscar</a>
 						</div>
 						</li>
 					<?php } ?>
@@ -100,46 +90,73 @@
 	</header>
 	<main>
 		<div class="container">
-			<h2>Inicia Sesión con tu usuario</h2>
+			<h2 class="text-center">Mi Cuenta<h2>
 			<form action="" method="POST">
-				<div class="form-group">
-					<label for="nombre">Nombre de Usuario</label>
-					<input type="text" class="form-control" id="nombre" placeholder="Pon tu nombre" name="nombre" value="<?php if(isset($nombre)){echo $nombre;}?>">
-					<?php
-						if(isset($_POST["enviar"])){
-							if(empty($nombre)){
-								echo "<span>Falta el nombre</span>";
-							}
-							elseif(!$nombre_correcto){
-								echo "<span>No existe un usuario con ese nombre</span>";
-							}
-						}
-					?>
-				</div>
-				<div class="form-group">
-					<label for="passwd">Password</label>
-					<input type="password" class="form-control" id="passwd" name="password" value="<?php if(isset($passwd)){echo $passwd;}?>" required>
-					<?php
-						if(isset($_POST["enviar"])){
-							if(!$coincide and !$nombre_correcto){
-								echo "<span>Contraseña incorrecta</span>";
-							}
-						}
-					?>
-				</div>
-				<button type="submit" class="btn btn-primary" name="enviar">Submit</button>
-			</form>
-			<?php
-				if(isset($_POST["enviar"])){
-					if($nombre_correcto and $coincide){
-						$_SESSION["usuario"] = $nombre;
-						header("Location:index.php");
+				<table class="table">
+				  <tbody>
+					<tr>
+					  <th scope="row">Nombre de Usuario</th>
+					  <td><?php echo $_SESSION["usuario"]?></td>
+					</tr>
+					<tr>
+					  <th scope="row">Email</th>
+					  <td><?php echo get_user_data($link,$_SESSION["usuario"],"email")?></td>
+					  <td><input type="submit" class="btn btn-primary" name="cambiar-email" value="Cambiar"></td>
+					</tr>
+					<tr>
+					  <th scope="row">Contraseña</th>
+					  <td><?php echo get_user_data($link,$_SESSION["usuario"],"contrasena")?></td>
+					  <td><input type="submit" class="btn btn-primary" name="cambiar-contrasena" value="Cambiar"></td>
+					</tr>
+				  </tbody>
+				</table>
+				<?php
+					if(isset($_POST["cambiar-email"])){
+				?>
+					<label for="nuevo-email">Email: </label>
+					<input id="nuevo-email "type="text" value="<?php echo get_user_data($link,$_SESSION["usuario"],"email")?>" name="nuevo-email">
+					<input type="submit" class="btn btn-primary" value="Confirmar" name="enviar-email">
+				<?php		
 					}
-				}
-			?>
+					elseif(isset($_POST["cambiar-contrasena"])){
+				?>
+					<label for="nueva-contrasena">Contraseña: </label>
+					<input id="nueva-contrasena "type="text" value="<?php echo get_user_data($link,$_SESSION["usuario"],"contrasena")?>" name="nueva-contrasena">
+					<input type="submit" class="btn btn-primary" value="Confirmar" name="enviar-contrasena">
+				<?php		
+					}
+				?>
+				<?php
+					if(isset($_POST["enviar-email"])){
+						$nuevo_email = $_POST["nuevo-email"];
+						$current_user = $_SESSION["usuario"];
+						$consulta = "update usuarios set email='$nuevo_email' where nombre_usuario='$current_user'";
+						my_update($link,$consulta);
+						header("Location:micuenta.php");
+					}
+					elseif(isset($_POST["enviar-contrasena"])){
+						$nueva_contrasena = $_POST["nueva-contrasena"];
+						$current_user = $_SESSION["usuario"];
+						$consulta = "update usuarios set contrasena='$nueva_contrasena' where nombre_usuario='$current_user'";
+						my_update($link,$consulta);
+						header("Location:micuenta.php");
+					}
+				?>
+				<p>¿Quieres borrar tu cuenta?</p>
+				<input type="submit" class="btn btn-danger" name="borrar" value="Eliminar Cuenta">
+				<?php
+					if(isset($_POST["borrar"])){
+						$current_user = $_SESSION["usuario"];
+						$consulta = "delete from usuarios where nombre_usuario='$current_user';";
+						my_delete($link,$consulta);
+						header("Location:logout.php");
+					}
+				?>
+			</form>
 		</div>
+		
 	</main>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

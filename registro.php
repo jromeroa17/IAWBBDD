@@ -80,7 +80,7 @@
 						<a class="nav-link" href="login.php">Inicio de Sesión</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#">Cerrar Sesión</a>
+						<a class="nav-link" href="logout.php">Cerrar Sesión</a>
 					</li>
 					<?php if (isset($_SESSION["usuario"])) { ?>
 					<li class="nav-item">
@@ -91,11 +91,11 @@
 						Personajes
 					  </a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-							<a class="dropdown-item" href="#">Crear</a>
-							<a class="dropdown-item" href="#">Modificar</a>
-							<a class="dropdown-item" href="#">Listar</a>
-							<a class="dropdown-item" href="#">Borrar</a>
-							<a class="dropdown-item" href="#">Buscar</a>
+							<a class="dropdown-item" href="crearpersonaje.php">Crear</a>
+							<a class="dropdown-item" href="modificarpersonaje.php">Modificar</a>
+							<a class="dropdown-item" href="listarpersonajes.php">Listar</a>
+							<a class="dropdown-item" href="borrarpersonajes.php">Borrar</a>
+							<a class="dropdown-item" href="buscarpersonajes">Buscar</a>
 						</div>
 						</li>
 					<?php } ?>

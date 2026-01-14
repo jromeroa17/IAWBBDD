@@ -10,6 +10,13 @@
 		ul li {
 			padding:5px;
 		}
+		.container{
+			margin:20px auto;
+			width:70%;
+		}
+		form div {
+			margin:10px;
+		}
     </style>
 </head>
 <body>
@@ -26,6 +33,10 @@
 		catch(mysqli_sql_exception $e){
 			echo "Conexión fallida" . $e->getMessage();
 		}
+		
+		
+	?>
+	<?php
 	?>
 	<header>
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -65,12 +76,11 @@
 		</nav>
 	</header>
 	<main>
-		<h2>Modificar Personaje<h2>
+		<h2>Buscar Personaje<h2>
 		<p>Hola <?php echo $_SESSION["usuario"]?></p>
 	</main>
-
+	
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 </body>
 </html>
