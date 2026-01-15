@@ -10,12 +10,9 @@
 		ul li {
 			padding:5px;
 		}
-		.container{
-			margin:20px auto;
-			width:70%;
-		}
-		form div {
-			margin:10px;
+		img{
+			width:100px;
+			height:100px;
 		}
     </style>
 </head>
@@ -26,17 +23,34 @@
 		$user = "root";
 		$pass = "";
 		$dbName = "romeroJavier";
-		$campos = ["nombre_usuario","contrasena"];
-		try{
-			$link = mysqli_connect($server, $user, $pass, $dbName);
+		$campos = ["codigo","nombre_personaje","clase","fuerza","destreza","constitucion","inteligencia","sabiduria","carisma","imagen","borrar","modificar"];		
+		$campo_imagen = "imagen";
+		$link = conexion_bbdd($server,$user,$pass,$dbName);
+		
+		if(isset($_SESSION["usuario"])){
+			$current_user = $_SESSION["usuario"];
 		}
-		catch(mysqli_sql_exception $e){
-			echo "Conexión fallida" . $e->getMessage();
+		else{
+			header("Location:login.php");
 		}
 		
+		if(isset($_POST["buscar"])){
+			$nombre = $_POST["nombre_personaje"];
+			$correcto = controlErrores([$nombre]);
+			if($correcto){
+				$codigo = get_codigo_personaje($link,$nombre,$current_user);
+			}
+		}
 		
-	?>
-	<?php
+		if(isset($_POST["accion"]) and isset($_POST["codigo"])){
+			$codigo = $_POST["codigo"];
+			if ($_POST["accion"] == "borrar"){
+				$consulta = "delete from personajes where codigo='$codigo'";
+				my_delete($link,$consulta);
+				header("Location:borrarpersonaje.php");
+			}
+		}
+		
 	?>
 	<header>
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -76,8 +90,36 @@
 		</nav>
 	</header>
 	<main>
-		<h2>Buscar Personaje<h2>
-		<p>Hola <?php echo $_SESSION["usuario"]?></p>
+		<div class="container mt-4 text-center">
+			<h2>Busca uno de tus personajes</h2>
+			<form action="" method="POST">
+				<div class="form-group ">
+					<input type="text" name="nombre_personaje" class="">
+					<input type="submit" name="buscar" class="btn btn-success">
+					<?php
+						if(isset($_POST["buscar"]) and !$correcto){
+					?>
+					<span>Introduce un nombre</span>
+					<?php		
+						}
+					?>
+					<?php
+						if(isset($_POST["buscar"]) and !$codigo){
+					?>
+					<span>No existe ese personaje</span>
+					<?php		
+						}
+					?>
+				</div>
+			</form>
+			<?php
+				if(!empty($codigo)){
+					$consulta = "select * from personajes where codigo='$codigo';";
+					my_image_query($link, $consulta, $campos, $campo_imagen);
+				}
+			?>
+		</div>
+		
 	</main>
 	
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

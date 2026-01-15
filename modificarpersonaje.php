@@ -19,12 +19,15 @@
 		$user = "root";
 		$pass = "";
 		$dbName = "romeroJavier";
-		$campos = ["nombre_usuario","contrasena"];
-		try{
-			$link = mysqli_connect($server, $user, $pass, $dbName);
+		$campos = ["codigo","nombre_personaje","clase","fuerza","destreza","constitucion","inteligencia","sabiduria","carisma","imagen","borrar","modificar"];		
+		$campo_imagen = "imagen";
+		$link = conexion_bbdd($server,$user,$pass,$dbName);
+		
+		if(isset($_SESSION["usuario"])){
+			$current_user = $_SESSION["usuario"];
 		}
-		catch(mysqli_sql_exception $e){
-			echo "Conexión fallida" . $e->getMessage();
+		else{
+			header("Location:login.php");
 		}
 	?>
 	<header>
@@ -65,8 +68,19 @@
 		</nav>
 	</header>
 	<main>
-		<h2>Modificar Personaje<h2>
-		<p>Hola <?php echo $_SESSION["usuario"]?></p>
+		<div class="container mt-4">
+			<h2>Modificar Personajes</h2>
+			<form action="modificarpersonajeformulario.php" method="POST">
+				<select name="nombre" class="form-select mb-3" required>
+					<option value="">-- Selecciona un personaje --</option>
+					<?php
+						$consulta = "SELECT nombre_personaje FROM personajes WHERE creador='$current_user'";
+						generate_option($link, $consulta);
+					?>
+				</select>
+				<input type="submit" name="mostrar" value="Mostrar Datos" class="btn btn-success">
+			</form>
+		</div>
 	</main>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

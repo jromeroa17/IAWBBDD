@@ -34,6 +34,30 @@
 		
 	}
 	
+	function get_codigo_personaje($link,$nombre,$usuario){
+		$codigo = false;
+		$consulta = "select codigo from personajes where creador='$usuario' and nombre_personaje='$nombre';";
+		$resul = mysqli_query($link,$consulta);
+		$numFilas = mysqli_num_rows($resul);
+		if($numFilas != 0){
+			$fila = mysqli_fetch_assoc($resul);
+			$codigo = $fila["codigo"];
+		}
+		return $codigo;
+	}
+	
+	function get_datos_personaje($link,$codigo,$dato){
+		$dato_pedido = false;
+		$consulta = "select $dato from personajes where codigo='$codigo'";
+		$resul = mysqli_query($link,$consulta);
+		$numFilas = mysqli_num_rows($resul);
+		if ($numFilas != 0){
+			$fila = mysqli_fetch_assoc($resul);
+			$dato_pedido = $fila[$dato];
+		}
+		return $dato_pedido;
+	}
+	
 	function generateTable($resultado, $campos){
 		echo "<table border=1 class='datos'>";
 		echo "<tr>";
@@ -51,34 +75,61 @@
 	}
 
 
-	function my_image_query($link, $consulta, $campos, $baseDir){
+	function my_image_query($link, $consulta, $campos, $campo_imagen){
 		$resul = mysqli_query($link,$consulta);
 		$numFilas = mysqli_num_rows($resul);
 		if ($numFilas == 0){
-			echo "Empty set";
+			echo "No has creado ningún personaje aún";
 		}
 		else{
-			generateImageTable($resul, $campos, $baseDir);
+			generateImageTable($resul, $campos, $campo_imagen);
 		}
 	}
 	
-	function generateImageTable($resultado, $campos, $baseDir){
-		echo "<table border=1 class='datos' >";
-		echo "<tr>";
+	function generateImageTable($resultado, $campos, $campo_imagen){
+		echo "<table class='table table-striped'>";
+		echo "<thead><tr>";
+		foreach($campos as $campo){
+			echo "<th scope='col'>$campo</th>";
+		}
+		echo "</tr></thead>";
+		echo "<tbody>";
+		
 		while($fila = mysqli_fetch_assoc($resultado)){
-			for($i = 0; $i < count($campos); $i++){
-				if($i == count($campos) - 1){
-					$nombre = $fila[$campos[$i]];
-					echo "<td><img src='imagenes/$nombre'></td>";					
+			echo "<tr>";
+
+			foreach($campos as $campo){
+				if($campo == $campo_imagen){
+					$nombre = $fila[$campo];
+					echo "<td scope='row'><img src='imagenes/$nombre'></td>";
+				}
+				elseif($campo == "borrar"){
+					echo "<td scope='row'>
+							<form action='' method='post'>
+								<input type='hidden' name='codigo' value='{$fila['codigo']}'>
+								<button type='submit' name='accion' value='borrar' class='btn btn-danger'>Borrar</button>
+							</form>
+						  </td>";
+				}
+				elseif($campo == "modificar"){
+					echo "<td scope='row'>
+							<form action='modificarpersonajeformulario.php' method='post'>
+								<input type='hidden' name='codigo' value='{$fila['codigo']}'>
+								<button type='submit' name='accion' value='modificar' class='btn btn-warning'>Modificar</button>
+							</form>
+						  </td>";
 				}
 				else{
-					echo "<td>" . $fila[$campos[$i]] . "</td>";					
+					echo "<td scope='row'>{$fila[$campo]}</td>";
 				}
 			}
+
 			echo "</tr>";
 		}
-		echo "</table>";
+
+		echo "</tbody></table>";
 	}
+
 	
 	function my_insert($link,$consulta){
 		try{
@@ -116,7 +167,6 @@
 	function my_delete($link,$consulta){
 		try{
 			$resul = mysqli_query($link,$consulta);
-			echo "<br>Registro Borrado Correctamente";
 			$correcto = true;
 			
 		}
@@ -141,13 +191,6 @@
 		return $correcto;
 	}
 	
-	function generar_stat(){
-		$suma = 0;
-		for($i = 1; $i <= 3; $i++){
-			$suma += rand(1,6);
-		}
-		return $suma;
-	}
 	
 	function controlErrores($campos){
 		$correcto = true;
@@ -164,6 +207,17 @@
 			$correcto = true;
 		}
 		return $correcto;
+	}
+	
+	function generate_option($link,$consulta){
+		$resultado = mysqli_query($link,$consulta);
+		$numFilas = mysqli_num_rows($resultado);
+		if($numFilas != 0){
+			while($fila = mysqli_fetch_assoc($resultado)){
+				$nombre = $fila["nombre_personaje"];
+				echo "<option value='$nombre'>$nombre</option>";
+			}
+		}
 	}
 	
 ?>

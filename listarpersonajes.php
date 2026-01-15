@@ -7,8 +7,9 @@
     <title>BBDD</title>
 
     <style>
-		ul li {
-			padding:5px;
+		img{
+			width:50px;
+			height:50px;
 		}
     </style>
 </head>
@@ -19,13 +20,17 @@
 		$user = "root";
 		$pass = "";
 		$dbName = "romeroJavier";
-		$campos = ["nombre_usuario","email","contrasena"];
-		try{
-			$link = mysqli_connect($server, $user, $pass, $dbName);
+		$campos = ["codigo","nombre_personaje","clase","fuerza","destreza","constitucion","inteligencia","sabiduria","carisma","imagen"];		
+		$link = conexion_bbdd($server,$user,$pass,$dbName);
+		$campo_imagen = "imagen";
+		
+		if(isset($_SESSION["usuario"])){
+			$current_user = $_SESSION["usuario"];
 		}
-		catch(mysqli_sql_exception $e){
-			echo "Conexión fallida" . $e->getMessage();
+		else{
+			header("Location:login.php");
 		}
+		
 	?>
 	<header>
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -65,8 +70,14 @@
 		</nav>
 	</header>
 	<main>
-		<h2>Listar Personaje<h2>
-		<p>Hola</p>
+		<div class="container">
+			<h2 class="text-center">Estos son los personajes que has creado <?php echo $current_user?></h2>
+			<?php
+				$consulta = "select * from personajes where creador='$current_user';";
+				my_image_query($link, $consulta, $campos, $campo_imagen);
+			?>
+		</div>
+		
 	</main>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

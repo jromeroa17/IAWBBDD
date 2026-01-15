@@ -12,13 +12,6 @@
 <body>
 	<?php
 		require "libreriaBBDD.php";
-		function controlErrores($nombre){
-			$correcto = true;
-			if(empty($nombre)){
-				$correcto = false;
-			}
-			return $correcto;
-		}
 		
 		$server = "localhost";
 		$user = "root";
@@ -30,25 +23,6 @@
 		}
 		catch(mysqli_sql_exception $e){
 			echo "Conexión fallida" . $e->getMessage();
-		}
-	?>
-	<?php
-		$nombre_correcto = null;
-		$coincide = null;
-		$nombre = "";
-		$passwd = "";
-		if(isset($_POST["enviar"])){
-			$nombre = $_POST["nombre"];
-			$passwd = $_POST["password"];
-			$correcto = controlErrores($nombre);
-			if($correcto){
-				$consulta = "select * from usuarios where nombre_usuario='$nombre'";
-				$nombre_correcto = datos_correctos($link,$consulta);
-				if($nombre_correcto){
-					$consulta = "select * from usuarios where nombre_usuario='$nombre' and contrasena='$passwd';";
-					$coincide = datos_correctos($link,$consulta);
-				}
-			}
 		}
 	?>
 	<header>

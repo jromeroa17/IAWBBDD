@@ -22,7 +22,7 @@
 <body>
 	<?php
 		require "libreriaBBDD.php";
-		function controlErrores($nombre){
+		function controlErrores_login($nombre){
 			$correcto = true;
 			if(empty($nombre)){
 				$correcto = false;
@@ -50,7 +50,7 @@
 		if(isset($_POST["enviar"])){
 			$nombre = $_POST["nombre"];
 			$passwd = $_POST["password"];
-			$correcto = controlErrores($nombre);
+			$correcto = controlErrores_login($nombre);
 			if($correcto){
 				$consulta = "select * from usuarios where nombre_usuario='$nombre'";
 				$nombre_correcto = datos_correctos($link,$consulta);

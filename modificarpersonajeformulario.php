@@ -7,9 +7,16 @@
     <title>BBDD</title>
 
     <style>
+		ul li {
+			padding:5px;
+		}
 		.stats{
 			width:25%;
 			border-radius:20px;
+		}
+		img {
+			width:50px;
+			height:50px;
 		}
     </style>
 </head>
@@ -20,8 +27,8 @@
 		$user = "root";
 		$pass = "";
 		$dbName = "romeroJavier";
-		$campos = ["codigo","nombre_personaje","clase","fuerza","destreza","constitucion","inteligencia","sabiduria","carisma","imagen","creador"];
-		
+		$campos = ["codigo","nombre_personaje","clase","fuerza","destreza","constitucion","inteligencia","sabiduria","carisma","imagen","borrar","modificar"];		
+		$campo_imagen = "imagen";
 		$link = conexion_bbdd($server,$user,$pass,$dbName);
 		
 		if(isset($_SESSION["usuario"])){
@@ -30,6 +37,113 @@
 		else{
 			header("Location:login.php");
 		}
+		
+		$codigo = "";
+		$nombre = "";
+		$clase = "";
+		$fuerza = "";
+		$destreza = "";
+		$constitucion = "";
+		$inteligencia = "";
+		$sabiduria = "";
+		$carisma = "";
+		$imagen = "";
+		$statsmal = false;
+		$correcto = false;
+		
+		if(isset($_POST["mostrar"], $_POST["nombre"])){
+			$nombre = $_POST["nombre"];
+			$consulta = "SELECT * FROM personajes WHERE nombre_personaje='$nombre'";
+			$resultado = mysqli_query($link, $consulta);
+			$fila = mysqli_fetch_assoc($resultado);
+
+			if($fila){
+				$codigo = $fila['codigo'];
+				$clase = $fila['clase'];
+				$fuerza = $fila['fuerza'];
+				$destreza = $fila['destreza'];
+				$constitucion = $fila['constitucion'];
+				$inteligencia = $fila['inteligencia'];
+				$sabiduria = $fila['sabiduria'];
+				$carisma = $fila['carisma'];
+				$imagen = $fila['imagen'];
+			}
+		}
+		
+		elseif(isset($_POST["accion"]) and isset($_POST["codigo"])){
+			$codigo = $_POST["codigo"];
+			if($_POST["accion"] == "modificar"){
+				$consulta = "SELECT * FROM personajes WHERE codigo='$codigo'";
+				$resultado = mysqli_query($link, $consulta);
+				$fila = mysqli_fetch_assoc($resultado);
+
+				if($fila){
+					$nombre = $fila['nombre_personaje'];
+					$clase = $fila['clase'];
+					$fuerza = $fila['fuerza'];
+					$destreza = $fila['destreza'];
+					$constitucion = $fila['constitucion'];
+					$inteligencia = $fila['inteligencia'];
+					$sabiduria = $fila['sabiduria'];
+					$carisma = $fila['carisma'];
+					$imagen = $fila['imagen'];
+				}
+			}
+		}
+		
+		
+		if(isset($_POST["enviar"])){
+			$codigo = $_POST["codigo"];
+			$nombre = $_POST["nombre_personaje"];
+			$clase = $_POST["clase"];
+			$fuerza = $_POST["fuerza"];
+			$destreza = $_POST["destreza"];
+			$constitucion = $_POST["constitucion"];
+			$inteligencia = $_POST["inteligencia"];
+			$sabiduria = $_POST["sabiduria"];
+			$carisma = $_POST["carisma"];
+
+			$datos = [$codigo,$nombre,$clase,$fuerza,$destreza,$constitucion,$inteligencia,$sabiduria,$carisma];
+			$correcto = controlErrores($datos);
+
+			if($correcto){
+				$stats = [$fuerza,$destreza,$constitucion,$inteligencia,$sabiduria,$carisma];
+				$statsmal = false;
+				foreach($stats as $stat){
+					if(!checkStat($stat)){
+						$statsmal = true;
+						break;
+					}
+				}
+			}
+
+			if($correcto && !$statsmal){
+				$update_imagen = "";
+				if(isset($_FILES["imagen"]) && $_FILES["imagen"]["tmp_name"] != ""){
+					$imagen = $_FILES["imagen"]["name"];
+					$origen = $_FILES["imagen"]["tmp_name"];
+					$destino = $_SERVER["DOCUMENT_ROOT"]."/romeroJavier/IAWBBDD/imagenes/".$imagen;
+					move_image($imagen, $origen, $destino);
+					$update_imagen = ", imagen='$imagen'";
+				}
+
+				$consulta = "UPDATE personajes SET 
+					nombre_personaje='$nombre',
+					clase='$clase',
+					fuerza=$fuerza,
+					destreza=$destreza,
+					constitucion=$constitucion,
+					inteligencia=$inteligencia,
+					sabiduria=$sabiduria,
+					carisma=$carisma
+					$update_imagen
+					WHERE codigo='$codigo';";
+
+				my_update($link,$consulta);
+				header("Location: modificarpersonaje.php");
+			}
+		}
+
 	?>
 	<header>
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -68,64 +182,12 @@
 		  </div>
 		</nav>
 	</header>
-	<?php
-		$codigo = "";
-		$nombre = "";
-		$clase = "";
-		$fuerza = "";
-		$destreza = "";
-		$constitucion = "";
-		$inteligencia = "";
-		$sabiduria = "";
-		$imagen = "";
-		$carisma = "";
-	?>
-	<?php
-			if(isset($_POST["enviar"])){
-				$codigo = $_POST["codigo"];
-				$nombre = $_POST["nombre_personaje"];
-				$clase = $_POST["clase"];
-				$fuerza = $_POST["fuerza"];
-				$destreza = $_POST["destreza"];
-				$constitucion = $_POST["constitucion"];
-				$inteligencia = $_POST["inteligencia"];
-				$sabiduria = $_POST["sabiduria"];
-				$carisma = $_POST["carisma"];
-				$imagen = $_FILES["imagen"]["name"];
-				$datos = [$codigo,$nombre,$clase,$fuerza,$destreza,$constitucion,$inteligencia,$sabiduria,$carisma,$imagen];
-				$correcto = controlErrores($datos);
-				if($correcto){
-					$stats = [$fuerza,$destreza,$constitucion,$inteligencia,$sabiduria,$carisma];
-					foreach($stats as $stat)
-						if (!checkStat($stat)){
-							$statsmal = true;
-						}
-						else{
-							$statsmal = false;
-						}
-				}
-			}
-			
-		?>
-		<?php
-			if(isset($_POST["enviar"])){
-				if($correcto and !$statsmal){
-					$origen = $_FILES["imagen"]["tmp_name"];
-					$destino = $_SERVER["DOCUMENT_ROOT"]."/romeroJavier/IAWBBDD/imagenes/".$imagen;
-					move_image($imagen,$origen,$destino);
-					$consulta = "insert into personajes values ('$codigo','$nombre','$clase',$fuerza,$destreza,$constitucion,$inteligencia,$sabiduria,$carisma,'$imagen','$current_user');";
-					my_insert($link,$consulta);
-					header("Location:creapersonaje.php");
-				}
-			}
-		?>
 	<main>
-		<div class="container">
-			<h2 class="text-center">Crear Personaje<h2>
+		<div class="container mt-4">
+			<h2>Modificar Personaje</h2>
 			<form action="" method="POST" enctype="multipart/form-data">
 				<div class="form-group mb-4">
-					<label class="" for="codigo">Código: </label>
-					<input type="text" class="form-control" name="codigo" id="codigo" required value="<?php echo $codigo?>">
+					<input type="hidden" name="codigo" value="<?= $codigo ?>">
 				</div>
 				<div class="form-group mb-4">
 					<label class="" for="nombre">Nombre: </label>
@@ -134,10 +196,10 @@
 				<div class="form-group mb-4">
 					<label class="" for="clase">Clase: </label>
 					<select class="form-select" name="clase" id="clase">
-						<option value="guerrero" <?php if(isset($_POST["enviar"]) and $_POST["clase"]=="guerrero"){ echo "selected";}?>>Guerrero</option>
-						<option value="picaro" <?php if(isset($_POST["enviar"]) and $_POST["clase"]=="picaro"){ echo "selected";}?>>Pícaro</option>
-						<option value="clerigo" <?php if(isset($_POST["enviar"]) and $_POST["clase"]=="clerigo"){ echo "selected";}?>>Clérigo</option>
-						<option value="mago" <?php if(isset($_POST["enviar"]) and $_POST["clase"]=="mago"){ echo "selected";}?>>Mago</option>
+						<option value="guerrero" <?php if($clase=="guerrero"){ echo "selected";}?>>Guerrero</option>
+						<option value="picaro" <?php if($clase=="picaro"){ echo "selected";}?>>Pícaro</option>
+						<option value="clerigo" <?php if($clase=="clerigo"){ echo "selected";}?>>Clérigo</option>
+						<option value="mago" <?php if($clase=="mago"){ echo "selected";}?>>Mago</option>
 					</select>
 				</div>
 				<div class="form-group mb-4">
@@ -213,19 +275,14 @@
 				</div>
 				<div class="form-group mb-4">
 					<label class="" for="imagen">Imagen: </label>
+					<img src="imagenes/<?php echo $imagen?>">
 					<input type="file" class="form-control" name="imagen" id="imagen">
 				</div>
-				<input type="submit" class="btn btn-primary" name="enviar" value="Crear">
+				<input type="submit" class="btn btn-primary" name="enviar" value="Modificar">
 			</form>
-			<?php
-				if(isset($_POST["enviar"]) and !$correcto){
-			?>
-				<span>Alguno de los campos está vacío</span>
-			<?php
-				}
-			?>
 		</div>
 	</main>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 

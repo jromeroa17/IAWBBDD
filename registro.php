@@ -22,7 +22,7 @@
 <body>
 	<?php
 		require "libreriaBBDD.php";
-		function controlErrores($nombre,$email){
+		function controlErrores_registro($nombre,$email){
 			$nombrecorrecto = true;
 			$emailcorrecto = true;
 			if(empty($nombre)){
@@ -59,7 +59,7 @@
 			$nombre = $_POST["nombre"];
 			$email = $_POST["email"];
 			$passwd = $_POST["password"];
-			$correcto = controlErrores($nombre,$email);
+			$correcto = controlErrores_registro($nombre,$email);
 			if($correcto["nombre"] and $correcto["email"]){
 				$consulta = "insert into usuarios values('$nombre','$email','$passwd');";
 				$consulta_correcta = my_insert($link,$consulta);
