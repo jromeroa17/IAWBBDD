@@ -1,5 +1,9 @@
 <?php
-	function conexion_bbdd($server,$user,$pass,$dbName){
+	function conexion_bbdd(){
+		$server = "localhost";
+		$user = "root";
+		$pass = "";
+		$dbName = "romeroJavier";
 		try{
 			$link = mysqli_connect($server, $user, $pass, $dbName);
 		}
@@ -8,16 +12,39 @@
 		}
 		return $link;
 	}
-	function my_query($link, $consulta, $campos){
-		$resul = mysqli_query($link,$consulta);
-		$numFilas = mysqli_num_rows($resul);
-		if ($numFilas == 0){
-			echo "Empty set";
+	
+	
+	
+	function check_logging(){
+		if(isset($_SESSION["usuario"])){
+			$current_user = $_SESSION["usuario"];
 		}
 		else{
-			generateTable($resul, $campos);
+			header("Location:login.php");
 		}
+		return $current_user;
 	}
+	
+	function controlErrores_registro($nombre,$email){
+			$nombrecorrecto = true;
+			$emailcorrecto = true;
+			if(empty($nombre)){
+				$nombrecorrecto = false;
+			}
+			if(empty($email)){
+				$emailcorrecto = false;
+			}
+			$correcto = ["nombre"=>$nombrecorrecto,"email"=>$emailcorrecto];
+			return $correcto;
+		}
+	
+	function controlErrores_login($nombre){
+			$correcto = true;
+			if(empty($nombre)){
+				$correcto = false;
+			}
+			return $correcto;
+		}
 	
 	function get_user_data($link,$usuario,$dato){
 		$consulta = "select $dato from usuarios where nombre_usuario='$usuario'";
@@ -57,23 +84,6 @@
 		}
 		return $dato_pedido;
 	}
-	
-	function generateTable($resultado, $campos){
-		echo "<table border=1 class='datos'>";
-		echo "<tr>";
-		foreach($campos as $valor)
-			echo "<th>$valor</th>";
-		echo "</tr>";
-		while($fila = mysqli_fetch_assoc($resultado)){
-			echo "<tr>";
-			for($i = 0; $i < count($campos); $i++){
-				echo "<td>" . $fila[$campos[$i]] . "</td>";
-			}
-			echo "</tr>";
-		}
-		echo "</table>";
-	}
-
 
 	function my_image_query($link, $consulta, $campos, $campo_imagen){
 		$resul = mysqli_query($link,$consulta);

@@ -4,50 +4,16 @@
 <head>
     <meta charset="utf-8">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="styles.css" rel="stylesheet">
     <title>BBDD</title>
-
-    <style>
-		ul li {
-			padding:5px;
-		}
-		.container{
-			margin:20px auto;
-			width:70%;
-		}
-		form div {
-			margin:10px;
-		}
-    </style>
 </head>
 <body>
 	<?php
 		require "libreriaBBDD.php";
-		function controlErrores_registro($nombre,$email){
-			$nombrecorrecto = true;
-			$emailcorrecto = true;
-			if(empty($nombre)){
-				$nombrecorrecto = false;
-			}
-			if(empty($email)){
-				$emailcorrecto = false;
-			}
-			$correcto = ["nombre"=>$nombrecorrecto,"email"=>$emailcorrecto];
-			return $correcto;
-		}
-		
-		$server = "localhost";
-		$user = "root";
-		$pass = "";
-		$dbName = "romeroJavier";
+		require "footer.php";
+		require "nav.php";
 		$campos = ["nombre_usuario","contrasena"];
-		try{
-			$link = mysqli_connect($server, $user, $pass, $dbName);
-		}
-		catch(mysqli_sql_exception $e){
-			echo "Conexión fallida" . $e->getMessage();
-		}
-		
-		
+		$link = conexion_bbdd();	
 	?>
 	<?php
 		$correcto = ["nombre"=>null,"email"=>null];
@@ -66,43 +32,7 @@
 			}
 		}
 	?>
-	<header>
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-			<div>
-				<ul class="navbar-nav">
-					<li class="nav-item">
-						<a class="nav-link" href="index.php">Home</a>
-					</li>
-					<li class="nav-item active">
-						<a class="nav-link" href="registro.php">Registrarse</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="login.php">Inicio de Sesión</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="logout.php">Cerrar Sesión</a>
-					</li>
-					<?php if (isset($_SESSION["usuario"])) { ?>
-					<li class="nav-item">
-						<a class="nav-link" href="micuenta.php">Mi Cuenta</a>
-					</li>
-					<li class="nav-item dropdown">
-					  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Personajes
-					  </a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-							<a class="dropdown-item" href="crearpersonaje.php">Crear</a>
-							<a class="dropdown-item" href="modificarpersonaje.php">Modificar</a>
-							<a class="dropdown-item" href="listarpersonajes.php">Listar</a>
-							<a class="dropdown-item" href="borrarpersonajes.php">Borrar</a>
-							<a class="dropdown-item" href="buscarpersonajes">Buscar</a>
-						</div>
-						</li>
-					<?php } ?>
-				</ul>
-		  </div>
-		</nav>
-	</header>
+	<?php crea_nav()?>
 	<main>
 		<div class="container">
 			<h2>Regístrate en nuestra página</h2>
@@ -139,7 +69,7 @@
 			?>
 		</div>
 	</main>
-	
+	<?php crea_footer()?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
