@@ -26,7 +26,8 @@
 			$email = $_POST["email"];
 			$passwd = $_POST["password"];
 			$correcto = controlErrores_registro($nombre,$email);
-			if($correcto["nombre"] and $correcto["email"]){
+			$existe = get_user_data($link,$nombre,"nombre_usuario");
+			if($correcto["nombre"] and $correcto["email"] and empty($existe)){
 				$consulta = "insert into usuarios values('$nombre','$email','$passwd');";
 				$consulta_correcta = my_insert($link,$consulta);
 			}
@@ -43,6 +44,9 @@
 					<?php
 						if(!$correcto["nombre"] and isset($_POST["enviar"])){
 							echo "<span>Falta el nombre</span>";
+						}
+						elseif(!empty($existe)){
+							echo "<span>Ya existe un usuario con esa cuenta</span>";
 						}
 					?>
 				</div>

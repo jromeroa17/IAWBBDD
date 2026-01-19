@@ -12,18 +12,27 @@
 		require "nav.php";
 		require "footer.php";
 		require "libreriaBBDD.php";
+		$campos = ["nombre_usuario","email","contrasena"];		
+		$campo_imagen = "imagen";
 		$link = conexion_bbdd();
-		$campos = ["nombre_usuario","contrasena"];
+		
+		
 		$current_user = check_logging();
+		
 	?>
 	<?php crea_nav()?>
-	
 	<main>
-		<div class="container text-center">
-			<h2 class="fs-1">Bienvenido <?php echo $current_user?></h2>
+		<div class="container">
+			<h2 class="text-center">Usuarios Dados de alta</h2>
+			<?php
+				$consulta = "select * from usuarios;";
+				my_image_query($link, $consulta, $campos, $campo_imagen);
+			?>
 		</div>
+		
 	</main>
 	<?php crea_footer()?>
+	
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 

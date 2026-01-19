@@ -23,7 +23,6 @@ function crea_nav(){
                         <li class="nav-item">
                             <a class="nav-link" href="micuenta.php">Mi Cuenta</a>
                         </li>
-
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
                                role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -42,7 +41,11 @@ function crea_nav(){
                             <a class="nav-link" href="logout.php">Cerrar Sesión</a>
                         </li>
                     <?php } ?>
-
+					<?php if(isset($_SESSION["usuario"]) and $_SESSION["usuario"] == "admin") { ?>
+						<li class="nav-item">
+                            <a class="nav-link" href="admin.php">Usuarios</a>
+                        </li>
+					<?php }?>
                 </ul>
             </div>
         </nav>

@@ -76,6 +76,8 @@
 				<?php
 					if(isset($_POST["borrar"])){
 						$current_user = $_SESSION["usuario"];
+						$consulta = "delete from personajes where creador='$current_user';";
+						my_delete($link,$consulta);
 						$consulta = "delete from usuarios where nombre_usuario='$current_user';";
 						my_delete($link,$consulta);
 						header("Location:logout.php");
