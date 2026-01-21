@@ -23,6 +23,10 @@ img{
 	height:100px;
 }
 
+span{
+    color:red;
+}
+
 .container{
 	margin:20px auto;
 	width:70%;

@@ -66,7 +66,7 @@
 		$resul = mysqli_query($link,$consulta);
 		$numFilas = mysqli_num_rows($resul);
 		if ($numFilas == 0){
-			echo "Eso está mal";
+			
 		}
 		else{
 			$fila = mysqli_fetch_assoc($resul);
