@@ -106,7 +106,7 @@
 				if(isset($_FILES["imagen"]) && $_FILES["imagen"]["tmp_name"] != ""){
 					$imagen = $_FILES["imagen"]["name"];
 					$origen = $_FILES["imagen"]["tmp_name"];
-					$destino = $_SERVER["DOCUMENT_ROOT"]."/romeroJavier/IAWBBDD/imagenes/".$imagen;
+					$destino = $_SERVER["DOCUMENT_ROOT"]."/imagenes/".$imagen;
 					move_image($imagen, $origen, $destino);
 					$update_imagen = ", imagen='$imagen'";
 				}

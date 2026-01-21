@@ -14,13 +14,12 @@
 		require "libreriaBBDD.php";
 		$link = conexion_bbdd();
 		$campos = ["nombre_usuario","contrasena"];
-		$current_user = check_logging();
 	?>
 	<?php crea_nav()?>
 	
 	<main>
 		<div class="container text-center">
-			<h2 class="fs-1">Bienvenido <?php echo $current_user?></h2>
+			<h2 class="fs-1">Bienvenido</h2>
 		</div>
 	</main>
 	<?php crea_footer()?>

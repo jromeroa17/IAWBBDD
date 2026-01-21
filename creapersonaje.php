@@ -61,7 +61,7 @@
 			if(isset($_POST["enviar"])){
 				if($correcto and !$statsmal){
 					$origen = $_FILES["imagen"]["tmp_name"];
-					$destino = $_SERVER["DOCUMENT_ROOT"]."/romeroJavier/IAWBBDD/imagenes/".$imagen;
+					$destino = $_SERVER["DOCUMENT_ROOT"]."/imagenes/".$imagen;
 					move_image($imagen,$origen,$destino);
 					$consulta = "insert into personajes values ('$codigo','$nombre','$clase',$fuerza,$destreza,$constitucion,$inteligencia,$sabiduria,$carisma,'$imagen','$current_user');";
 					my_insert($link,$consulta);
